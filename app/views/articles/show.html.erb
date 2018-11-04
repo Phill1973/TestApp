@@ -10,12 +10,13 @@
                                     data: { confirm: "Sind Sie sich sicher, dass Sie den Artikel löschen möchten?"},
                                     class: "btn btn-xs btn-danger" %>
       <%= link_to 'Alle Artikel anzeigen', articles_path, class: "btn btn-xs btn-success" %>
+      <%= link_to 'Neuen Artikel erstellen', new_article_path, class: "btn btn-xs btn-success" %>
     </div>
     <p> <p> <p>
     <hr>
-    <h4 class="center"><strong>Comments: </strong></h4>
+    <h4 class="center"><strong>Kommentare: </strong></h4>
       <%= render @article.comments %>
-      <h2>Add a comment:</h2>
+      <h2>Kommentar hinzufügen:</h2>
       <%= render 'comments/form' %>  
 </div>
  

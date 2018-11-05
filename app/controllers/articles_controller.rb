@@ -1,17 +1,25 @@
 class ArticlesController < ApplicationController
+  #http_basic_authenticate_with name: "admin", password: "admin", except: [:index, :show]
+  #war der ursprüngliche admin bereich
+  #before_action läuft der reihe nach ab, also initalisierugsreihenfolge beachten!
+  before_action :set_article, only: [:edit, :update, :show, :destroy]  
+  #übergibt set_article nur an edit,update,show,destroy
+  before_action :require_user, except: [:index, :show]
+  #bedingung: irgend ein user für alles außer show und index
+  before_action :require_same_user, only: [:edit, :update, :destroy]
+  #nur user mit der gleichen id haben die berechtigung zum löschen, editieren, updaten
   
-  http_basic_authenticate_with name: "admin", password: "admin", except: [:index, :show]
+
     
   def index
-    @articles = Article.all
+    @articles = Article.paginate(page: params[:page], per_page: 5)
   end
   
   def new
     @article = Article.new
   end
-  
+    
   def edit
-    @article = Article.find(params[:id])
   end
     
   def create
@@ -26,11 +34,9 @@ class ArticlesController < ApplicationController
   end
     
   def show
-    @article = Article.find(params[:id])
   end
   
   def update
-    @article = Article.find(params[:id])
       if @article.update(article_params)
         flash[:success] ="Der Artikel wurde erfolgreich geupdated"
         redirect_to @article
@@ -40,7 +46,6 @@ class ArticlesController < ApplicationController
   end
   
   def destroy
-    @article = Article.find(params[:id])
     @article.destroy
     flash[:danger] ="Der Artikel wurde erfolgreich gelöscht"
     redirect_to articles_path
@@ -49,6 +54,15 @@ class ArticlesController < ApplicationController
   private
   def article_params
     params.require(:article).permit(:title, :text)
+  end  
+  def set_article
+    @article = Article.find(params[:id])
+  end
+  def require_same_user
+    if current_user != @article.user
+      flash[:danger] = "Sie können nur Ihre eigenen Artikel bearbeiten!"
+      redirect_to root_path
+    end
   end
   
 end

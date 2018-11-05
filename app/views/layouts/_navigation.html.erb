@@ -5,26 +5,46 @@
     </div>
     <ul class="nav navbar-nav">     
      <li><%= link_to "Startseite", root_path %></li>
-     <li><%= link_to "Artikelübersicht", articles_path %></li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Artikel
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <%= link_to "Artikelübersicht", articles_path %>
-          <div class="dropdown-divider"></div>
-          <%= link_to "Artikel erstellen", new_article_path %>
-        </div>
-      </li>
-    </ul>
-
-  
-    
-    <ul class="nav navbar-nav navbar-right">
-      <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-      <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-    </ul>
+          Artikel</a>        
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <%= link_to "Artikelübersicht", articles_path %>
+            <% if logged_in? %>
+              <div class="dropdown-divider"></div>
+              <%= link_to "Artikel erstellen", new_article_path %>
+            <% end %>
+          </div>
+        </li>
+      <% if logged_in? %>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Blogger
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <%= link_to "Alle Blogger", users_path %>
+            <div class="dropdown-divider"></div>
+            <%= link_to "-leeres Feld-", new_article_path %>
+          </div>       
+        </li>
+      <% end %>
+      </ul>    
+      <ul class="nav navbar-nav navbar-right">
+        <% if logged_in? %>
+          <li><%= link_to 'Abmelden', logout_path, method: :delete %></li> 
+            <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Ihr Profil</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <%= link_to "Profil bearbeiten", edit_user_path(current_user) %>
+              <div class="dropdown-divider"></div>
+              <%= link_to "Ihr Profil", user_path(current_user) %>
+            </div>  
+        <% else %>
+          <li><%= link_to 'Registrieren', signup_path %></li>
+          <li><%= link_to 'Anmelden', login_path %></li> 
+        <% end %>        
+      </ul>
   </div>
-  
-
 </nav>
+  

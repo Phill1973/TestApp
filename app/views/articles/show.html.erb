@@ -19,12 +19,15 @@
   <hr>
   <%= simple_format(@article.text) %>
   <div class="article-actions">
-    <%= link_to 'Artikel bearbeiten', edit_article_path(@article), class: "btn btn-xs btn-primary" %>
-    <%= link_to 'Artikel löschen', article_path(@article), method: :delete, 
-                                  data: { confirm: "Sind Sie sich sicher, dass Sie den Artikel löschen möchten?"},
-                                  class: "btn btn-xs btn-danger" %>
+    <% if logged_in? && current_user == @article.user %>
+      <%= link_to 'Artikel bearbeiten', edit_article_path(@article), class: "btn btn-xs btn-primary" %>
+      <%= link_to 'Artikel löschen', article_path(@article), method: :delete, 
+                                    data: { confirm: "Sind Sie sich sicher, dass Sie den Artikel löschen möchten?"},
+                                    class: "btn btn-xs btn-danger" %>
+   
+      <%= link_to 'Neuen Artikel erstellen', new_article_path, class: "btn btn-xs btn-success" %>
+    <% end %>
     <%= link_to 'Alle Artikel anzeigen', articles_path, class: "btn btn-xs btn-success" %>
-    <%= link_to 'Neuen Artikel erstellen', new_article_path, class: "btn btn-xs btn-success" %>
   </div>
   <p> <p> <p>
   <hr>

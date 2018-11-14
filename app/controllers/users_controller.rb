@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:edit, :update, :show]
-  before_action :require_same_user, only: [:edit, :update]
+  before_action :require_same_user, only: [:edit, :update, :destroy]
+  before_action :require_admin, only: [:destroy]
   
   def index
     @users = User.paginate(page: params[:page], per_page: 5)
@@ -12,9 +13,10 @@ class UsersController < ApplicationController
   
   def create
     @user = User.new(user_params)
-      if  @user.save
-        flash[:success] ="Willkommen bei Testapp #{@user.username}"
-        redirect_to articles_path
+    if  @user.save
+      session[:user_id] = @user.id
+      flash[:success] ="Willkommen bei Testapp #{@user.username}"
+      redirect_to user_path(@user)
     else
       render 'new'
     end
@@ -37,6 +39,13 @@ class UsersController < ApplicationController
     @user_articles = @user.articles.paginate(page: params[:page], per_page: 5)
   end  
   
+  def destroy
+    @user = User.find(params[:id])
+    @user.destroy
+    flash[:danger] = "Der Nutzer und seine Artikel wurden gelöscht"
+    redirect_to users_path
+  end
+  
   private
     def user_params
       params.require(:user).permit(:username, :email, :password)
@@ -49,5 +58,11 @@ class UsersController < ApplicationController
         flash[:danger] = "Sie können nur Ihren eigenen Account bearbeiten!"
         redirect_to root_path
       end
-    end     
+    end  
+    def require_admin
+      if logged_in? && !current_user.admin?
+        flash[:danger] = "Nur ein Admin hat darauf Zugriff"
+        redirect_to root_path
+      end
+    end
 end

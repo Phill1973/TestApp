@@ -34,7 +34,7 @@
           <li><%= link_to 'Abmelden', logout_path, method: :delete %></li> 
             <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Ihr Profil</a>
+              Ihr Profil <%= " [Admin]" if current_user.admin? %></a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <%= link_to "Profil bearbeiten", edit_user_path(current_user) %>
               <div class="dropdown-divider"></div>

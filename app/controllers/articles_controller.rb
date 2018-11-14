@@ -24,9 +24,9 @@ class ArticlesController < ApplicationController
     
   def create
     @article = Article.new(article_params)
-    @article.user = User.first
+    @article.user = current_user
       if  @article.save
-        flash[:success] ="Der Artikel wurde erfolgreich erstellt"
+        flash[:success] = "Der Artikel wurde erfolgreich erstellt"
         redirect_to @article
     else
       render 'new'
@@ -38,7 +38,7 @@ class ArticlesController < ApplicationController
   
   def update
       if @article.update(article_params)
-        flash[:success] ="Der Artikel wurde erfolgreich geupdated"
+        flash[:success] = "Der Artikel wurde erfolgreich geupdated"
         redirect_to @article
       else
         render 'edit'
@@ -59,7 +59,7 @@ class ArticlesController < ApplicationController
     @article = Article.find(params[:id])
   end
   def require_same_user
-    if current_user != @article.user
+    if current_user != @article.user && !current_user.admin?
       flash[:danger] = "Sie können nur Ihre eigenen Artikel bearbeiten!"
       redirect_to root_path
     end
